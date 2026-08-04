@@ -1,0 +1,4 @@
+name: myFirstWorkflow
+
+# to get trigger on every push in this rep in any branch
+on: push

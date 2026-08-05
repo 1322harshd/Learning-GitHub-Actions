@@ -10,6 +10,19 @@ jobs:
     steps:
       - name: Running single command in Job1
         run: echo "Hi this is my first GitHub Workflow"
-
       - name: Checking OS Release for GitHub Hosted Runner
         run: cat /etc/os-release
+      - name: Calling Sleep
+        run: sleep 20
+  job2:
+     name: JOB2
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checking Hostname for Runner
+         run: hostname
+       - name: Running multiple commands
+         run:
+           echo "Hi from Harshdeep Singh"
+           echo "current time is 'date'"
+           sleep 20
+     

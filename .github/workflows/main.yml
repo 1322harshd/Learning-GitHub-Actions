@@ -35,7 +35,7 @@ jobs:
         run: sleep 10
       - name: Checking Runner Info
         shell: pwsh
-        run: get_computerinfo
+        run: get-computerinfo
   job4:
     name: JOB4
     needs: [job1,job2,job3]

@@ -1,6 +1,11 @@
 name: myFirstWorkflow
 
-on: push
+on: 
+  push:
+    branches: 
+      - dev
+      - 'feature-*'
+      - main
 
 jobs:
   job1:
@@ -30,28 +35,7 @@ jobs:
           name: single_file
           path: ./myartifact.txt
 
-      - name: Upload from directory
-        uses: actions/upload-artifact@v7.0.1
-        with:
-          name: directory_artifacts
-          path: artifacts/
-
-      - name: Upload from multiple paths
-        uses: actions/upload-artifact@v7.0.1
-        with:
-          name: multiple_paths
-          path: |
-            ./myartifact.txt
-            artifacts/
-
-      - name: Upload from multiple paths with exclusions
-        uses: actions/upload-artifact@v7.0.1
-        with:
-          name: multiple_paths_with_exclusions
-          path: |
-            ./myartifact.txt
-            artifacts/
-            !**/hostname.txt
+     
 
   job2:
     name: JOB2
@@ -73,56 +57,4 @@ jobs:
         run: |
           pwd
           ls -ltr
-  job3:
-      name: JOB3
-      runs-on: ubuntu-latest
-      needs: job1
-    
-      steps:
-        - name: checking current directory
-          run: |
-            pwd
-            ls -ltr
-    
-        - name: Download directory
-          uses: actions/download-artifact@v7.0.0
-          with:
-            name: directory_artifacts
-    
-        - name: checking current directory post download
-          run: |
-            pwd
-            ls -ltr
-  job4:
-        name: JOB4
-        runs-on: ubuntu-latest
-        needs: job1
-      
-        steps:
-          - name: creating custom folder for download
-            run: |
-              mkdir -p single_file
-              mkdir -p download_directory
-          - name: checking current directory
-            run: |
-              pwd
-              ls -ltr
-          - name: Download single file artifact
-            uses: actions/download-artifact@v7.0.0
-            with:
-              name: single_file
-              path: single_file
-      
-          - name: Download directory
-            uses: actions/download-artifact@v7.0.0
-            with:
-              name: directory_artifacts
-              path: download_directory
-      
-          - name: checking current directory post download
-            run: |
-              pwd
-              echo "CHECKING SINGLE FIEL DIRECTORY"
-              ls -ltr single_file
-              echo "CHECKING DIRECTORY ARTIFACTS"
-              ls -ltr download_directory
+  

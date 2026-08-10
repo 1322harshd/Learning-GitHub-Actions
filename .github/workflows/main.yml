@@ -13,31 +13,37 @@ jobs:
           pwd
           ls -ltr
           hostname
+
       - name: checkout
         uses: actions/checkout@v6.1.0
+
       - name: Step-3
         run: |
           echo `pwd` >> myartifact.txt
           mkdir artifacts
           echo `ls -ltr` >> artifacts/lists.txt
           echo `hostname` >> artifacts/hostname.txt
+
       - name: Upload Single File
         uses: actions/upload-artifact@v7.0.1
         with:
           name: single_file
           path: ./myartifact.txt
+
       - name: Upload from directory
         uses: actions/upload-artifact@v7.0.1
         with:
           name: directory_artifacts
           path: artifacts/
-      - name: Upload from multiple aths
+
+      - name: Upload from multiple paths
         uses: actions/upload-artifact@v7.0.1
         with:
           name: multiple_paths
           path: |
             ./myartifact.txt
             artifacts/
+
       - name: Upload from multiple paths with exclusions
         uses: actions/upload-artifact@v7.0.1
         with:
@@ -46,24 +52,24 @@ jobs:
             ./myartifact.txt
             artifacts/
             !**/hostname.txt
+
   job2:
     name: JOB2
     runs-on: ubuntu-latest
+    needs: job1
 
     steps:
       - name: checking current directory
         run: |
           pwd
           ls -ltr
+
       - name: Download single file artifact
         uses: actions/download-artifact@v7.0.0
         with:
           name: single_file
+
       - name: checking current directory post download
         run: |
           pwd
           ls -ltr
-        
-          
-        
-    

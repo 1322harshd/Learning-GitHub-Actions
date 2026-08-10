@@ -124,5 +124,5 @@ jobs:
               pwd
               echo "CHECKING SINGLE FIEL DIRECTORY"
               ls -ltr single_file
-              echo 'CHECKING DIRECTORY ARTIFACTS"
+              echo "CHECKING DIRECTORY ARTIFACTS"
               ls -ltr download_directory

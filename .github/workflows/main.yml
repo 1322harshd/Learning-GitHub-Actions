@@ -55,4 +55,7 @@ jobs:
         run: |
           echo "[INFO] Running Deployment for $ENV_TYPE with user $APP_USER."
           echo "[INFO] Once deployed application is accessible on port $APP_PORT."
+      - name: Referring Repository Secret
+        run: |
+          echo "[INFO] Application password is ${{ secrets.APP_PASSWORD }}"
 

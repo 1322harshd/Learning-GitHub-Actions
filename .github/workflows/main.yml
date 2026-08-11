@@ -54,5 +54,5 @@ jobs:
       - name: Referring Evironment Variables
         run: |
           echo "[INFO] Running Deployment for $ENV_TYPE with user $APP_USER."
-          exho "[INFO] Once deployed application is accessible on port $APP_PORT."
+          echo "[INFO] Once deployed application is accessible on port $APP_PORT."
 

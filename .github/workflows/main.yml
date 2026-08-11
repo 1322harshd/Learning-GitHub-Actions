@@ -1,12 +1,17 @@
 name: myFirstWorkflow
 
+
 on: 
   push:
     branches: 
-      - dev
-      - 'feature-*'
       - main
-
+  pull_request:
+    branches:
+      - main
+env:
+  ENV_TYPE: DEV
+  APP_USER: thinnyx
+  APP_PORT: 80
 jobs:
   job1:
     name: JOB1
@@ -43,18 +48,48 @@ jobs:
     needs: job1
 
     steps:
-      - name: checking current directory
-        run: |
-          pwd
-          ls -ltr
-
       - name: Download single file artifact
         uses: actions/download-artifact@v7.0.0
         with:
           name: single_file
-
-      - name: checking current directory post download
+      - name: Referring Evironment Variables
         run: |
-          pwd
-          ls -ltr
-  
+          echo "[INFO] Running Deployment for $ENV_TYPE with user $APP_USER."
+          echo "[INFO] Once deployed application is accessible on port $APP_PORT."
+      - name: Referring Repository Secret
+        run: |
+          echo "[INFO] Application password is ${{ secrets.APP_PASSWORD }}"
+
+  job3:
+    name: JOB3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Referring context or in-built variables
+        run: |
+          echo "[INFO] Triggered by ${{ github.event_name }}."
+          echo "[INFO] New changes are added by ${{ github.actor }} in ${{ github.head_ref}} branch."
+          echo "[INFO] Current step is running on ${{ runner.os }}."
+          echo "[INFO] Current JOB ID is ${{ job.check_run_id }}."
+
+  staging:
+     name: STAGE DEPLOYMENT
+     runs-on: ubuntu-latest
+     steps:
+       - name: Referring Environment Variables
+         run: echo "[INFO] Runnning deployment on ${{ vars.HOST }} using ${{ vars.USER }}."
+       - name: Referring Environment Secrets
+         run: echo "[INFO] Password for ${{ vars.USER }} is ${{ secrets.PASSWORD }}."
+     environment:
+       name: STAGING
+     if: github.head_ref == 'dev'
+  production:
+     name: PRODUCTION DEPLOYMENT
+     runs-on: ubuntu-latest
+     steps:
+       - name: Referring Environment Variables
+         run: echo "[INFO] Runnning deployment on ${{ vars.HOST }} using ${{ vars.USER }}."
+       - name: Referring Environment Secrets
+         run: echo "[INFO] Password for ${{ vars.USER }} is ${{ secrets.PASSWORD }}."
+     environment:
+       name: PRODUCTION
+     if: github.ref == 'refs/heads/main'

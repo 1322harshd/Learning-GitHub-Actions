@@ -25,4 +25,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run Unit Tests
-        run: pytest -v
+        run: |
+          mkdir reports/
+          pytest --junitxml=reports/unit-tet-results.xml --cov-report=xml --cov-report=term-missing -v
+      - name: upload code coverage report
+        uses: actions/upload-artifact@v7.0.1
+
+        with:
+            name: unit-test-report
+            path: reports/
+            

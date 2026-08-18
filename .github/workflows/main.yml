@@ -169,28 +169,28 @@ jobs:
       contents: read
 
     steps:
-      - name: Download the Image
-        uses: actions/download-artifact@v8
-        with:
-          name: thinknyx_app_image
-          path: .
+        - name: Download the Image
+          uses: actions/download-artifact@v8
+          with:
+            name: thinknyx_app_image
+            path: .
 
-      - name: Load Docker Image
-        run: docker load -i thinknyx_app.tar
+        - name: Load Docker Image
+          run: docker load -i thinknyx_app.tar
 
-      - name: Login to GHCR
-        uses: docker/login-action@v4.6.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} #GITHUB AUTOMATICLALY CREATES A GITHUB TOKEN SECRET TO USE IN YOUR WORKFLOWS
+        - name: Login to GHCR
+          uses: docker/login-action@v4.6.0
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tag Image
-        run: |
-          IMAGE_TAG="${{ needs.build.outputs.image-tags }}"
-          docker image tag thinknyx_app:$IMAGE_TAG ghcr.io/${{ github.repository_owner }}/thinknyx_app:$IMAGE_TAG
+        - name: Tag Image
+          run: |
+            IMAGE_TAG="${{ needs.build.outputs.image-tags }}"
+            docker image tag thinknyx_app:$IMAGE_TAG ghcr.io/${{ github.repository_owner }}/thinknyx_app:$IMAGE_TAG
 
-      - name: Push Image
-        run: |
-          IMAGE_TAG="${{ needs.build.outputs.image-tags }}"
-          docker image push ${{ github.repository_owner }}/thinknyx_app:$IMAGE_TAG
+        - name: Push Image
+          run: |
+            IMAGE_TAG="${{ needs.build.outputs.image-tags }}"
+            docker image push ghcr.io/${{ github.repository_owner }}/thinknyx_app:$IMAGE_TAG

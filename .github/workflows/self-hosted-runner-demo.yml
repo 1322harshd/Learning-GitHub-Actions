@@ -1,5 +1,5 @@
 name: self-hosted-runner-demo
-#this workflow demonstrates usage of self-hosted runner
+#this workflow demonstrates usage of self-hosted runners
 on:
     push:
         branches:

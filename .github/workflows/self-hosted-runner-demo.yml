@@ -7,7 +7,7 @@ on:
 jobs:
     demo-1:
         name: Demo Job 1
-        runs-on: arc-demo
+        runs-on: github-actions-scaleset-demo
         steps:
             - name: Display system information
               run: |
@@ -16,17 +16,18 @@ jobs:
                 lsb_release -a || cat /etc/os-release
                 echo "Runner Name: ${{ runner.name }}"
                 echo "Runner OS: ${{ runner.os }}"
-                sleep 30
+                sleep 90
     demo-2:
         name: Demo Job 2
-        runs-on: [self-hosted,linux]
+        runs-on: github-actions-scaleset-demo
         steps:
-            - name: Display system information
+            - name: 
               run: |
                 echo "Hostname: $(hostname)"
                 echo "OS Version:"
                 lsb_release -a || cat /etc/os-release
                 echo "Runner Name: ${{ runner.name }}"
                 echo "Runner OS: ${{ runner.os }}"
+                sleep 90
 
 

@@ -1,5 +1,6 @@
-name: myFirstWorkflow
+name: CI pipeline
 
+#reusable workflows demo change
 
 on: 
   push:
@@ -8,88 +9,22 @@ on:
   pull_request:
     branches:
       - main
-env:
-  ENV_TYPE: DEV
-  APP_USER: thinnyx
-  APP_PORT: 80
+
+permissions:
+  actions: read
+  security-events: write
+  packages: write
+  contents: read
+
 jobs:
-  job1:
-    name: JOB1
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Step-1
-        run: |
-          pwd
-          ls -ltr
-          hostname
-
-      - name: checkout
-        uses: actions/checkout@v6.1.0
-
-      - name: Step-3
-        run: |
-          echo `pwd` >> myartifact.txt
-          mkdir artifacts
-          echo `ls -ltr` >> artifacts/lists.txt
-          echo `hostname` >> artifacts/hostname.txt
-
-      - name: Upload Single File
-        uses: actions/upload-artifact@v7.0.1
-        with:
-          name: single_file
-          path: ./myartifact.txt
-
-     
-
-  job2:
-    name: JOB2
-    runs-on: ubuntu-latest
-    needs: job1
-
-    steps:
-      - name: Download single file artifact
-        uses: actions/download-artifact@v7.0.0
-        with:
-          name: single_file
-      - name: Referring Evironment Variables
-        run: |
-          echo "[INFO] Running Deployment for $ENV_TYPE with user $APP_USER."
-          echo "[INFO] Once deployed application is accessible on port $APP_PORT."
-      - name: Referring Repository Secret
-        run: |
-          echo "[INFO] Application password is ${{ secrets.APP_PASSWORD }}"
-
-  job3:
-    name: JOB3
-    runs-on: ubuntu-latest
-    steps:
-      - name: Referring context or in-built variables
-        run: |
-          echo "[INFO] Triggered by ${{ github.event_name }}."
-          echo "[INFO] New changes are added by ${{ github.actor }} in ${{ github.head_ref}} branch."
-          echo "[INFO] Current step is running on ${{ runner.os }}."
-          echo "[INFO] Current JOB ID is ${{ job.check_run_id }}."
-
-  staging:
-     name: STAGE DEPLOYMENT
-     runs-on: ubuntu-latest
-     steps:
-       - name: Referring Environment Variables
-         run: echo "[INFO] Runnning deployment on ${{ vars.HOST }} using ${{ vars.USER }}."
-       - name: Referring Environment Secrets
-         run: echo "[INFO] Password for ${{ vars.USER }} is ${{ secrets.PASSWORD }}."
-     environment:
-       name: STAGING
-     if: github.head_ref == 'dev'
-  production:
-     name: PRODUCTION DEPLOYMENT
-     runs-on: ubuntu-latest
-     steps:
-       - name: Referring Environment Variables
-         run: echo "[INFO] Runnning deployment on ${{ vars.HOST }} using ${{ vars.USER }}."
-       - name: Referring Environment Secrets
-         run: echo "[INFO] Password for ${{ vars.USER }} is ${{ secrets.PASSWORD }}."
-     environment:
-       name: PRODUCTION
-     if: github.ref == 'refs/heads/main'
+    ci-pipeline-job:
+      uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
+      with:
+        run_codeql: true
+        run_sonarqube: true
+        run_build: false
+      secrets:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

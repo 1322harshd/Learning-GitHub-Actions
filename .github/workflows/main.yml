@@ -22,8 +22,9 @@ jobs:
       uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
       with:
         run_codeql: true
-        run_sonarqube: false
-        run_build: false
+        run_sonarqube: true
+        run_build: true
+        run_ghcr_publish: true
       secrets:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

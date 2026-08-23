@@ -1,7 +1,7 @@
 name: CI pipeline
 
 #reusable workflows demo change
-
+ 
 on: 
   push:
     branches: 
@@ -22,7 +22,7 @@ jobs:
       uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
       with:
         run_codeql: true
-        run_sonarqube: true
+        run_sonarqube: false
         run_build: false
       secrets:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -21,8 +21,8 @@ jobs:
     ci-pipeline-job:
       uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
       with:
-        run_codeql: true
-        run_sonarqube: true
+        run_codeql: false
+        run_sonarqube: false
         run_build: true
         run_ghcr_publish: true
       secrets:

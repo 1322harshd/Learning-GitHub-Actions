@@ -1,6 +1,5 @@
 name: CI pipeline
 
-#reusable workflows demo change
  
 on: 
   push:

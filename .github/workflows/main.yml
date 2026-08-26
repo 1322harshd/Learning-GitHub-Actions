@@ -21,8 +21,8 @@ jobs:
     ci-pipeline-job:
       uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
       with:
-        run_codeql: false
-        run_sonarqube: false
+        run_codeql: true
+        run_sonarqube: true
         run_build: true
         run_ghcr_publish: true
       secrets:
@@ -56,7 +56,7 @@ jobs:
         
         - name: update image name in deployment YAML
           run: |
-            IMAGE_TAGS:"${{ github.run_id }}-${GITHUB_SHA::7}"
+            IMAGE_TAGS="${{ github.run_id }}-${GITHUB_SHA::7}"
             IMAGE="ghcr.io/1322harshd/thinknyxapp:${IMAGE_TAGS}"
             yq e '.spec.template.spec.container[0].image = strenv(IMAGE)' manifests/deployment.yaml -i
             cat manifests/deployment.yaml

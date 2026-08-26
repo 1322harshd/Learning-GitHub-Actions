@@ -31,6 +31,9 @@ jobs:
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     
     deploy-with-kubectl:
+      environment: STAGING
+      env: 
+        NAMESPACE: ${{ vars.NAMESPACE }}
       needs: ci-pipeline-job
       runs-on: github-actions-scaleset-demo
       steps: 
@@ -60,3 +63,16 @@ jobs:
             IMAGE="ghcr.io/1322harshd/thinknyxapp:${IMAGE_TAGS}"
             yq e '.spec.template.spec.container[0].image = strenv(IMAGE)' manifests/deployment.yaml -i
             cat manifests/deployment.yaml
+
+        - name: Create Namespace if not exists
+          run: |
+            kubectl get namespace $NAMESPACE || kubectl create namespace $NAMESPACE
+
+        - name: Deploy to Kubernetes Cluster
+          run: |
+            kubectl apply -f manifests/ -n $NAMESPACE
+        
+        - name: Verify Deployment
+          run: |
+            kubectl rollout status deployment/thinknyx -n $NAMESPACE
+            kubectl get all -n $NAMESPACE

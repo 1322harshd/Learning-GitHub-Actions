@@ -60,7 +60,7 @@ jobs:
           run: |
             IMAGE_TAGS="${{ github.run_id }}-${GITHUB_SHA::7}"
             IMAGE="ghcr.io/1322harshd/thinknyxapp:${IMAGE_TAGS}"
-            yq e '.spec.template.spec.container[0].image = strenv(IMAGE)' manifests/deployment.yaml -i
+            yq e '.spec.template.spec.containers[0].image = strenv(IMAGE)' manifests/deployment.yaml -i
             cat manifests/deployment.yaml
 
         - name: Create Namespace if not exists

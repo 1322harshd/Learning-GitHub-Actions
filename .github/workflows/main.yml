@@ -43,11 +43,20 @@ jobs:
               chmod +x ./kubectl
               sudo mv ./kubectl /usr/local/bin/kubectl
               kubectl version --client
-        - name: Configure Kubeconfig
+        - name: Verify kubectl access
           run: |
-            mkdir -p ~/.kube
-            echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-            kubectl version
             kubectl get nodes
+            kubectl get pods -n default
+
+        - name: Install yq
+          run: |
+            sudo curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o /usr/local/bin/yq
+            sudo chmod +x /usr/local/bin/yq
+            yq --version
         
-        
+        - name: update image name in deployment YAML
+          run: |
+            IMAGE_TAGS:"${{ github.run_id }}-${GITHUB_SHA::7}"
+            IMAGE="ghcr.io/1322harshd/thinknyxapp:${IMAGE_TAGS}"
+            yq e '.spec.template.spec.container[0].image = strenv(IMAGE)' manifests/deployment.yaml -i
+            cat manifests/deployment.yaml

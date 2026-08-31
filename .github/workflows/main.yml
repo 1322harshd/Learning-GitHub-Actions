@@ -58,8 +58,8 @@ jobs:
           run: |
             sudo apt-get update
             sudo apt-get install -y wget gnupg ca-certificates
-            wget -q -0 - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \ | sudo tee /etc/apt/sources.list.d/google-chrome.list
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
             sudo apt-get update
             sudo apt-get install -y google-chrome-stable
         
@@ -72,7 +72,7 @@ jobs:
             APP_BASE_URL: ${{ vars.APP_BASE_URL }}
           run: |
               mkdir -p reports
-              pytest test/ --html=reports/selenium-report.html --self-contained-html
+              pytest tests/ --html=reports/selenium-report.html --self-contained-html
 
         - name: Upload Selenium Test Report
           uses: actions/upload-artifact@v7.0.1

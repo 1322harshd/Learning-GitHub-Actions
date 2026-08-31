@@ -35,7 +35,6 @@ jobs:
 
       with:
         ENVIRONMENT: STAGING
-        NAMESPACE: ${{ vars.NAMESPACE}}
         IMAGE_NAME: ghcr.io/1322harshd/thinknyx_app
 
       secrets:

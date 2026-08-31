@@ -57,7 +57,24 @@ jobs:
         - name: Install Firefox system dependencies
           run: |
             sudo apt-get update
-            sudo apt-get install -y xz-utils libgtk-3-0 libdbus-glib-1-2 libxt6 libx11-xcb1
+            sudo apt-get install -y \
+              xz-utils \
+              libgtk-3-0 \
+              libasound2 \
+              libdbus-glib-1-2 \
+              libxt6 \
+              libx11-xcb1 \
+              libnss3 \
+              libnspr4 \
+              libcups2 \
+              libdrm2 \
+              libgbm1 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxfixes3 \
+              libxrandr2 \
+              libxtst6 \
+              fonts-liberation
 
         - name: Install Firefox
           uses: browser-actions/setup-firefox@v1

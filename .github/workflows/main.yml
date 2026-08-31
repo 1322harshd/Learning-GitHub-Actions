@@ -54,8 +54,10 @@ jobs:
           with: 
             python-version: '3.10'
         
-        - name: Install xz-utils
-          run: sudo apt-get update && sudo apt-get install -y xz-utils
+        - name: Install Firefox system dependencies
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y xz-utils libgtk-3-0 libdbus-glib-1-2 libxt6 libx11-xcb1
 
         - name: Install Firefox
           uses: browser-actions/setup-firefox@v1

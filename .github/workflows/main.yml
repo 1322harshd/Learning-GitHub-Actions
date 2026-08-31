@@ -30,48 +30,16 @@ jobs:
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     
     deploy-with-kubectl:
-      environment: STAGING
-      env: 
-        NAMESPACE: ${{ vars.NAMESPACE }}
       needs: ci-pipeline-job
-      runs-on: github-actions-scaleset-demo
-      steps: 
-        - name: Checkout Repository
-          uses: actions/checkout@v6.1.0
-        
-        - name: Install kubectl
-          run: |
-              curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-              chmod +x ./kubectl
-              sudo mv ./kubectl /usr/local/bin/kubectl
-              kubectl version --client
-        - name: Verify kubectl access
-          run: |
-            kubectl get nodes
-            kubectl get pods -n default
+      uses:  1322harshd/reusable-workflows/.github/workflows/deploy-with-kubectl.yml@main
 
-        - name: Install yq
-          run: |
-            sudo curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o /usr/local/bin/yq
-            sudo chmod +x /usr/local/bin/yq
-            yq --version
-        
-        - name: update image name in deployment YAML
-          run: |
-            IMAGE_TAGS="${{ github.run_id }}-${GITHUB_SHA::7}"
-            export IMAGE="ghcr.io/1322harshd/thinknyxapp:${IMAGE_TAGS}"
-            yq e '.spec.template.spec.containers[0].image = strenv(IMAGE)' manifests/deployment.yaml -i
-            cat manifests/deployment.yaml
+      with:
+        ENVIRONMENT: STAGING
+        NAMESPACE: ${{ vars.NAMESPACE}}
+        IMAGE_NAME: ghcr.io/1322harshd/thinknyx_app
 
-        - name: Create Namespace if not exists
-          run: |
-            kubectl get namespace $NAMESPACE || kubectl create namespace $NAMESPACE
+      secrets:
+        KUBECONFIG: ${{ secrets.KUBECONFIG}}
 
-        - name: Deploy to Kubernetes Cluster
-          run: |
-            kubectl apply -f manifests/ -n $NAMESPACE
-        
-        - name: Verify Deployment
-          run: |
-            kubectl rollout status deployment/thinknyxapp -n $NAMESPACE
-            kubectl get all -n $NAMESPACE
+    
+   

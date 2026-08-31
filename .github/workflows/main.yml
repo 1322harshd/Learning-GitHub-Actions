@@ -1,7 +1,6 @@
 name: CI pipeline
 
-#reusable workflows demo change
-
+ 
 on: 
   push:
     branches: 
@@ -23,8 +22,23 @@ jobs:
       with:
         run_codeql: true
         run_sonarqube: true
-        run_build: false
+        run_build: true
+        run_ghcr_publish: true
       secrets:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    deploy-with-kubectl:
+      needs: ci-pipeline-job
+      uses:  1322harshd/reusable-workflows/.github/workflows/deploy-with-kubectl.yml@main
+
+      with:
+        ENVIRONMENT: STAGING
+        IMAGE_NAME: ghcr.io/1322harshd/thinknyx_app
+
+      secrets:
+        KUBECONFIG: ${{ secrets.KUBECONFIG}}
+
+    
+   

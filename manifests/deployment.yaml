@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thinknyxapp
+  labels:
+    app: thinknyxapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thinknyxapp
+  template:
+    metadata:
+      labels:
+        app: thinknyxapp
+    spec:
+      containers:
+        - name: thinknyxapp
+          image: ghcr.io/1322harshd/thinknyx_app:32214935805-aab8a85
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"

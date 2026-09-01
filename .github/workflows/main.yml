@@ -83,14 +83,6 @@ jobs:
           run: |
               pip install -r requirements-tests.txt
 
-        - name: Debug connectivity from runner
-          env:
-            APP_BASE_URL: ${{ vars.APP_BASE_URL }}
-          run: |
-              echo "APP_BASE_URL=$APP_BASE_URL"
-              env | grep -i proxy || echo "no proxy env vars set"
-              curl -v "$APP_BASE_URL/health"
-
         - name: Run Selenium Test
           env:
             APP_BASE_URL: ${{ vars.APP_BASE_URL }}

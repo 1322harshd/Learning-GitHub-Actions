@@ -35,6 +35,7 @@ BASE_URL = os.environ.get("APP_BASE_URL", "http://localhost:5000").rstrip("/")
 def driver():
     options = Options()
     options.add_argument("--headless")
+    options.set_preference("devtools.jsonview.enabled", False)
 
     firefox_driver = webdriver.Firefox(
         service=Service(GeckoDriverManager().install()), options=options

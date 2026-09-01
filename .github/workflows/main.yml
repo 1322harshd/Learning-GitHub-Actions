@@ -39,6 +39,11 @@ jobs:
 
       secrets:
         KUBECONFIG: ${{ secrets.KUBECONFIG}}
-
     
-   
+    run-selenium-tests:
+      needs: deploy-with-kubectl
+      uses: 1322harshd/reusable-workflows/.github/workflows/selenium-tests.yml@main
+
+      with:
+        ENVIRONMENT: STAGING
+      

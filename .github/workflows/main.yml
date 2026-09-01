@@ -41,59 +41,9 @@ jobs:
         KUBECONFIG: ${{ secrets.KUBECONFIG}}
     
     run-selenium-tests:
-      environment: STAGING
       needs: deploy-with-kubectl
-      runs-on: github-actions-scaleset-demo
-      steps:
-        - name: Checkout Code
-          uses: actions/checkout@v6.1.0
+      uses: 1322harshd/reusable-workflows/.github/workflows/selenium-tests.yml@main
 
-        - name: Setup Python
-          uses: actions/setup-python@v7.0.0
-
-          with: 
-            python-version: '3.10'
-        
-        - name: Install Firefox system dependencies
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y \
-              xz-utils \
-              libgtk-3-0 \
-              libasound2t64 \
-              libdbus-glib-1-2 \
-              libxt6 \
-              libx11-xcb1 \
-              libnss3 \
-              libnspr4 \
-              libcups2 \
-              libdrm2 \
-              libgbm1 \
-              libxcomposite1 \
-              libxdamage1 \
-              libxfixes3 \
-              libxrandr2 \
-              libxtst6 \
-              fonts-liberation
-
-        - name: Install Firefox
-          uses: browser-actions/setup-firefox@v1
-        
-        - name: Install Dependencies
-          run: |
-              pip install -r requirements-tests.txt
-
-        - name: Run Selenium Test
-          env:
-            APP_BASE_URL: ${{ vars.APP_BASE_URL }}
-          run: |
-              mkdir -p reports
-              pytest tests/ --html=reports/selenium-report.html --self-contained-html
-
-        - name: Upload Selenium Test Report
-          uses: actions/upload-artifact@v7.0.1
-
-          with: 
-            name: selenium-test-report
-            path: reports/
-   
+      with:
+        ENVIRONMENT: STAGING
+      

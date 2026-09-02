@@ -114,4 +114,4 @@ jobs:
 
               git add HELMCHART-VERSION
               git commit -m "Updated Helm Chart Version to ${VERSION}"
-              git push origin head:${{ github.head_ref }}
+              git push origin HEAD:${{ github.head_ref }}

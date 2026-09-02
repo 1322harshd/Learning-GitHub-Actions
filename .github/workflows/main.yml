@@ -14,33 +14,46 @@ permissions:
 
 jobs:
 
-    ci-pipeline-job:
-      uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
-      with:
-        run_codeql: true
-        run_sonarqube: true
-        run_build: true
-        run_ghcr_publish: true
-      secrets:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    # ci-pipeline-job:
+    #   uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
+    #   with:
+    #     run_codeql: true
+    #     run_sonarqube: true
+    #     run_build: true
+    #     run_ghcr_publish: true
+    #   secrets:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     
-    deploy-with-kubectl:
-      needs: ci-pipeline-job
-      uses:  1322harshd/reusable-workflows/.github/workflows/deploy-with-kubectl.yml@main
+    # deploy-with-kubectl:
+    #   needs: ci-pipeline-job
+    #   uses:  1322harshd/reusable-workflows/.github/workflows/deploy-with-kubectl.yml@main
 
-      with:
-        ENVIRONMENT: STAGING
-        IMAGE_NAME: ghcr.io/1322harshd/thinknyx_app
+    #   with:
+    #     ENVIRONMENT: STAGING
+    #     IMAGE_NAME: ghcr.io/1322harshd/thinknyx_app
 
-      secrets:
-        KUBECONFIG: ${{ secrets.KUBECONFIG}}
+    #   secrets:
+    #     KUBECONFIG: ${{ secrets.KUBECONFIG}}
     
-    run-selenium-tests:
-      needs: deploy-with-kubectl
-      uses: 1322harshd/reusable-workflows/.github/workflows/selenium-tests.yml@main
+    # run-selenium-tests:
+    #   needs: deploy-with-kubectl
+    #   uses: 1322harshd/reusable-workflows/.github/workflows/selenium-tests.yml@main
 
-      with:
-        ENVIRONMENT: STAGING
-      
+    #   with:
+    #     ENVIRONMENT: STAGING
+      publish-helm-chart:
+        runs-on: ubuntu-latest
+        steps:
+          - name: checkout Repo
+            uses: actions/checkout@v6.1.0
+          
+          - name: Setup Helm
+            uses: azure/setup-helm@v5.0.1
+
+            with:
+              version: v3.16.4
+
+          - name: Check Helm Version
+            run: heml version

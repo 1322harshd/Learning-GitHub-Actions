@@ -108,12 +108,10 @@ jobs:
               git fetch origin ${{ github.head_ref }}
               git reset --hard origin/${{ github.head_ref }}
 
-              export IMAGE_TAGS="${{ github.run_id}}-${GITHUB_SHA::7}"
+              export IMAGE_TAGS="${{ github.run_id }}-${GITHUB_SHA::7}"
               export VERSION="0.1.0-${IMAGE_TAGS}"
               echo "VERSION=\"${VERSION}\"" > HELMCHART-VERSION
 
               git add HELMCHART-VERSION
               git commit -m "Updated Helm Chart Version to ${VERSION}"
-              GIT PUSH ORIGIN head:${{ github.head_ref }}
-
-          
+              git push origin head:${{ github.head_ref }}

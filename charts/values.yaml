@@ -1,0 +1,84 @@
+
+# --- RECONSTRUCTED SECTION (lines 1-27 were cropped in your screenshot) ---
+# Adjust these to match your course video / actual app image.
+ 
+replicaCount: 1
+ 
+image:
+  repository: ghcr.io/1322harshd/thinknyxapp
+  pullPolicy: IfNotPresent
+  tag: "latest"
+ 
+nameOverride: ""
+fullnameOverride: ""
+ 
+podAnnotations: {}
+ 
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8000
+  nodePort: 30007
+ 
+resources: {}
+ 
+# --- END RECONSTRUCTED SECTION ---
+# Everything below this line was directly visible in your screenshot (lines 28-66)
+ 
+securityContext: {}
+containerSecurityContext: {}
+ 
+env: [] # - name: KEY, value: VALUE
+ 
+imagePullSecrets: [] # - name: regcred
+ 
+nodeSelector: {}
+tolerations: []
+affinity: {}
+ 
+livenessProbe:
+  enabled: true
+  path: /health
+  port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  failureThreshold: 3
+ 
+readinessProbe:
+  enabled: true
+  path: /health
+  port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  failureThreshold: 3
+ 
+# Optional serviceAccount creation (disabled by default)
+serviceAccount:
+  create: false
+  name: ""
+ 
+# Horizontal pod autoscaler (optional)
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

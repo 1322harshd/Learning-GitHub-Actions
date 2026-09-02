@@ -20,21 +20,16 @@ jobs:
         steps:
             - name: Checkout Repo
               uses: actions/checkout@v6.1.0
+
             - name: Set up Helm
               uses: azure/setup-helm@v5.0.1
               with:
                 version: v3.16.4
+
             - name: Login to GHCR (OCI)
               run: |
-                echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ${{ env.OCI_REGISTRY}} -u ${{ github.actor }} --password-stdin
-            
-            - name: Configure kubeconfig
-              run: |
-                mkdir -p $HOME/.kube
-                echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-                chmod 600 $HOME/.kube/config
+                echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ${{ env.OCI_REGISTRY }} -u ${{ github.actor }} --password-stdin
 
-            - name: Deploy Helm Chart600
+            - name: Deploy Helm Chart
               run: |
-                helm upgrade --install thinknyxapp oci://${{ env.OCI_REGISTRY}}/${{ env.OCI_REPOSITORY}}/thinknyxapp --namespace ${{ vars.NAMESPACE }} --create-namespace --wait
-    
+                helm upgrade --install thinknyxapp oci://${{ env.OCI_REGISTRY }}/${{ env.OCI_REPOSITORY }}/thinknyxapp --namespace ${{ vars.NAMESPACE }} --create-namespace --wait

@@ -30,6 +30,12 @@ jobs:
               run: |
                 echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ${{ env.OCI_REGISTRY }} -u ${{ github.actor }} --password-stdin
 
+            - name: Reading HELMCHART Version
+              run: |
+                source HELMCHART-VERSION
+                echo "VERSION=$VERSION" >> $GITHUB_ENV
+                echo "Deploying Helm Chart Version: ${VERSION}"
+
             - name: Deploy Helm Chart
               run: |
-                helm upgrade --install thinknyxapp oci://${{ env.OCI_REGISTRY }}/${{ env.OCI_REPOSITORY }}/thinknyxapp --namespace ${{ vars.NAMESPACE }} --create-namespace --wait
+                helm upgrade --install thinknyxapp oci://${{ env.OCI_REGISTRY }}/${{ env.OCI_REPOSITORY }}/thinknyxapp --version ${{ env.VERSION }} --namespace ${{ vars.NAMESPACE }} --create-namespace --wait

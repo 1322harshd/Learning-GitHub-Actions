@@ -60,3 +60,8 @@ jobs:
 
           - name: Lint Chart
             run: helm lint charts/
+
+          - name: Create Package
+            run: |
+              helm package charts/
+              ls -ltr .

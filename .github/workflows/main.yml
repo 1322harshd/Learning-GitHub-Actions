@@ -68,10 +68,10 @@ jobs:
           - name: update image name in chart 7 values YAML
             run: |
                 export IMAGE_TAGS="${{ github.run_id }}-${GITHUB_SHA::7}"
-                export VERSION="0.1.0.${IMAGE_TAGS}"
+                export VERSION="0.1.0-${IMAGE_TAGS}"
                 yq e '.image.tag = strenv(IMAGE_TAGS)' charts/values.yaml -i
                 yq e '.version = strenv(VERSION)' charts/Chart.yaml -i
-                yq e '.appVersion = strenv(VERSION)' charts/Chart.yaml -i
+                yq e '.appVersion = strenv(IMAGE_TAGS)' charts/Chart.yaml -i
                 cat charts/values.yaml
                 cat charts/Chart.yaml
           - name: Lint Chart

@@ -5,7 +5,7 @@
 replicaCount: 1
  
 image:
-  repository: ghcr.io/1322harshd/thinknyxapp
+  repository: ghcr.io/1322harshd/thinknyx_app
   pullPolicy: IfNotPresent
   tag: "latest"
  

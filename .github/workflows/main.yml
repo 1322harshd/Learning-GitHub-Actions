@@ -72,7 +72,7 @@ jobs:
                 yq e '.image.tag = strenv(IMAGE_TAGS)' charts/values.yaml -i
                 yq e '.version = strenv(VERSION)' charts/Chart.yaml -i
                 yq e '.appVersion = strenv(VERSION)' charts/Chart.yaml -i
-                cat chars/values.yaml
+                cat charts/values.yaml
                 cat charts/Chart.yaml
           - name: Lint Chart
             run: helm lint charts/

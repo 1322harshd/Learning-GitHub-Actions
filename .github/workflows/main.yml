@@ -57,3 +57,6 @@ jobs:
 
           - name: Check Helm Version
             run: helm version
+
+          - name: Lint Chart
+            run: helm lint charts/

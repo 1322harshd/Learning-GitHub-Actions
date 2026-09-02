@@ -81,5 +81,17 @@ jobs:
             run: |
               helm package charts/
               ls -ltr .
+          
+          - name: Login to GHCR (OCI)
+            run: |
+              echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+          
+          - name: Push Helm Chart to GHCR (OCI)
+            run: |
+              export IMAGE_TAGS="${{ github.run_id }}-${GITHUB_SHA::7}"
+              export VERSION="0.1.0-${IMAGE_TAGS}"
+              helm push thinknyxapp-${VERSION}.tgz oci://ghcr.io/1322harshd/helm-charts
+          - name: Logout from GHCR
+            run: helm registry logout ghcr.io
 
           

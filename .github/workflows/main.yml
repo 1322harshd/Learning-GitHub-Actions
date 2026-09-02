@@ -12,38 +12,43 @@ permissions:
   packages: write
   contents: read
 
+env:
+  OCI_REGISTRY: ghcr.io
+  OCI_REPOSITORY: ${{ github.repository_owner }}/helm-charts
+
 jobs:
 
-    # ci-pipeline-job:
-    #   uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
-    #   with:
-    #     run_codeql: true
-    #     run_sonarqube: true
-    #     run_build: true
-    #     run_ghcr_publish: true
-    #   secrets:
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #     DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-    #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    ci-pipeline-job:
+       uses: 1322harshd/reusable-workflows/.github/workflows/ci-pipeline.yml@main
+       with:
+         run_codeql: true
+         run_sonarqube: true
+         run_build: true
+         run_ghcr_publish: true
+       secrets:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     
-    # deploy-with-kubectl:
-    #   needs: ci-pipeline-job
-    #   uses:  1322harshd/reusable-workflows/.github/workflows/deploy-with-kubectl.yml@main
+    deploy-with-kubectl:
+       needs: ci-pipeline-job
+       uses:  1322harshd/reusable-workflows/.github/workflows/deploy-with-kubectl.yml@main
 
-    #   with:
-    #     ENVIRONMENT: STAGING
-    #     IMAGE_NAME: ghcr.io/1322harshd/thinknyx_app
+       with:
+         ENVIRONMENT: STAGING
+         IMAGE_NAME: ghcr.io/1322harshd/thinknyx_app
 
-    #   secrets:
-    #     KUBECONFIG: ${{ secrets.KUBECONFIG}}
+       secrets:
+         KUBECONFIG: ${{ secrets.KUBECONFIG}}
     
-    # run-selenium-tests:
-    #   needs: deploy-with-kubectl
-    #   uses: 1322harshd/reusable-workflows/.github/workflows/selenium-tests.yml@main
+    run-selenium-tests:
+       needs: deploy-with-kubectl
+       uses: 1322harshd/reusable-workflows/.github/workflows/selenium-tests.yml@main
 
-    #   with:
-    #     ENVIRONMENT: STAGING
-      publish-helm-chart:
+       with:
+         ENVIRONMENT: STAGING
+    publish-helm-chart:
+        needs:  run-selenium-tests
         runs-on: ubuntu-latest
         steps:
           - name: checkout Repo
@@ -84,14 +89,14 @@ jobs:
           
           - name: Login to GHCR (OCI)
             run: |
-              echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+              echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ${{ env.OCI_REGISTRY}} -u ${{ github.actor }} --password-stdin
           
           - name: Push Helm Chart to GHCR (OCI)
             run: |
               export IMAGE_TAGS="${{ github.run_id }}-${GITHUB_SHA::7}"
               export VERSION="0.1.0-${IMAGE_TAGS}"
-              helm push thinknyxapp-${VERSION}.tgz oci://ghcr.io/1322harshd/helm-charts
+              helm push thinknyxapp-${VERSION}.tgz oci://${{ env.OCI_REGISTRY}}/${{ env.OCI_REPOSITORY }}
           - name: Logout from GHCR
-            run: helm registry logout ghcr.io
+            run: helm registry logout ${{ env.OCI_REGISTRY }}
 
           

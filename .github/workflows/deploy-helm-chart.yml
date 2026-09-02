@@ -1,0 +1,40 @@
+name: Deploy Helm Chart in Kubernetes Cluster
+on:
+    pull_request:
+        types: [closed]
+        branches:
+            - main
+permissions:
+        contents: read
+        packages: read
+env:
+    OCI_REGISTRY: ghcr.io
+    OCI_REPOSITORY: ${{ github.repository_owner }}/helm-charts
+
+jobs:
+    deploy-helm-chart:
+        environment: PRODUCTION
+        runs-on: github-actions-scaleset-demo
+
+        if: github.event.pull_request.merged == true
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v6.1.0
+            - name: Set up Helm
+              uses: azure/setup-helm@v5.0.1
+              with:
+                version: v3.16.4
+            - name: Login to GHCR (OCI)
+              run: |
+                echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ${{ env.OCI_REGISTRY}} -u ${{ github.actor }} --password-stdin
+            
+            - name: Configure kubeconfig
+              run: |
+                mkdir -p $HOME/.kube
+                echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+                chmod 600 $HOME/.kube/config
+
+            - name: Deploy Helm Chart600
+              run: |
+                helm upgrade --install thinknyxapp oci://${{ env.OCI_REGISTRY}}/${{ env.OCI_REPOSITORY}}/thinknyxapp --namespace ${{ vars.NAMESPACE }} --create-namespace --wait
+    

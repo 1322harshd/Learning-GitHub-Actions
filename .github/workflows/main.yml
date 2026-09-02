@@ -56,4 +56,4 @@ jobs:
               version: v3.16.4
 
           - name: Check Helm Version
-            run: heml version
+            run: helm version

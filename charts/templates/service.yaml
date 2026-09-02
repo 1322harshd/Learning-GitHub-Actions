@@ -13,5 +13,5 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
       {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePort }}
-      nodePort: {{ .Values.service.nodePort }}
+      nodePort: {{- if eq .Release.Namespace "production" }} 30008 {{- else if eq .Release.Namespace "staging" }} 30007 {{- end }}
       {{- end }}

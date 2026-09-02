@@ -30,7 +30,8 @@ containerSecurityContext: {}
  
 env: [] # - name: KEY, value: VALUE
  
-imagePullSecrets: [] # - name: regcred
+imagePullSecrets:
+  - name: ghcr-pull-secret
  
 nodeSelector: {}
 tolerations: []

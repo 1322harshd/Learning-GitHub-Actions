@@ -41,8 +41,15 @@ jobs:
               run: |
                 helm upgrade --install thinknyxapp oci://${{ env.OCI_REGISTRY }}/${{ env.OCI_REPOSITORY }}/thinknyxapp --version ${{ env.VERSION }} --namespace ${{ vars.NAMESPACE }} --create-namespace --wait
 
+            - name: Install kubectl
+              if: failure()
+              run: |
+                curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+                chmod +x ./kubectl
+                sudo mv ./kubectl /usr/local/bin/kubectl
+
             - name: Debug pods on failure
-              if: always()
+              if: failure()
               run: |
                 echo "--- pods ---"
                 kubectl get pods -n ${{ vars.NAMESPACE }} -o wide

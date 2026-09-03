@@ -4,6 +4,7 @@ on:
         types: [closed]
         branches:
             - main
+    workflow_dispatch: {}
 permissions:
         contents: read
         packages: read
@@ -16,7 +17,7 @@ jobs:
         environment: PRODUCTION
         runs-on: github-actions-scaleset-demo
 
-        if: github.event.pull_request.merged == true
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
         steps:
             - name: Checkout Repo
               uses: actions/checkout@v6.1.0
@@ -39,3 +40,15 @@ jobs:
             - name: Deploy Helm Chart
               run: |
                 helm upgrade --install thinknyxapp oci://${{ env.OCI_REGISTRY }}/${{ env.OCI_REPOSITORY }}/thinknyxapp --version ${{ env.VERSION }} --namespace ${{ vars.NAMESPACE }} --create-namespace --wait
+
+            - name: Debug pods on failure
+              if: always()
+              run: |
+                echo "--- pods ---"
+                kubectl get pods -n ${{ vars.NAMESPACE }} -o wide
+                echo "--- describe pods ---"
+                kubectl describe pod -n ${{ vars.NAMESPACE }} -l app=thinknyxapp
+                echo "--- previous container logs (if crashed) ---"
+                kubectl logs -n ${{ vars.NAMESPACE }} -l app=thinknyxapp --tail=100 --previous || true
+                echo "--- current container logs ---"
+                kubectl logs -n ${{ vars.NAMESPACE }} -l app=thinknyxapp --tail=100 || true
